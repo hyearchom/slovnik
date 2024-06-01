@@ -101,8 +101,14 @@ def vyhodnotit_odpoved(spravna_odpoved, odpoved_hrace, zdroj):
 
 
 def ulozit_postup_hrace(vystup):
-    # Ulozit nove hodnoty urovni jednotlivých slov do CSV souboru
-    with open(umisteni_tabulky, "w", newline="") as soubor:
+    # Uložit nove hodnoty urovni jednotlivých slov do CSV souboru
+    with open(umisteni_tabulky, "r+", newline="") as soubor:
+        # Předejde přepisu hlavičky
+        hlavicka = soubor.readline()
+        soubor.seek(0)
+        soubor.write(hlavicka)
+        
+        # Zapíše nové hodnoty úrovní
         zapis = csv.writer(soubor)
         zapis.writerows(vystup)
     print("\nHra skončena. Průběh uložen.")
