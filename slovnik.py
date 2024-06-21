@@ -4,8 +4,18 @@ import os
 import csv
 import random
 import difflib
+import argparse
 
 #---Nastavení---
+
+# Řádkové argumenty
+parser = argparse.ArgumentParser(
+                    prog='Slovník',
+                    description='Testování slovní zásoby přezkoušením')
+parser.add_argument(
+                '-a', '--add',
+                help="""Vložit nové slovo do slovníku ve formátu:
+                        slovo,překlad""")
 
 # Umístění zdrojové tabulky
 adresar_skriptu = os.path.dirname(os.path.abspath(__file__))
@@ -16,7 +26,29 @@ SLOUPEC_SLOVO, SLOUPEC_PREKLAD, SLOUPEC_UROVEN = 0,1,2
 
 #---Aplikace---
 
-def spustit_aplikaci():
+def overit_pridani():
+    nove_spojeni = parser.parse_args().add
+    if nove_spojeni:
+        pridat_slovo(nove_spojeni)
+        return True
+    else:
+        return False
+
+
+def pridat_slovo(zadani):
+    # odstranění nechtěných velkých písmen
+    zadani = zadani.lower()
+    """Formátování na zápis:
+            - s počátečním indexem 1
+            - '\n' skončením na novém řádku
+    """
+    zadani = f'{zadani},1\n'
+
+    with open(umisteni_tabulky, "a", newline="") as soubor:
+        soubor.write(zadani)
+
+
+def spustit_prezkouseni():
     
     data = ziskani_dat_tabulky()
     
@@ -115,5 +147,6 @@ def ulozit_postup_hrace(vystup):
 
 
 if __name__ == "__main__":
-    spustit_aplikaci()
+    if not overit_pridani():
+        spustit_prezkouseni()
     input('Dokončeno, zadej cokoli') # Vyčkání stisku klávesy pro ukončení
